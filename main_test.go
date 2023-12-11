@@ -41,6 +41,41 @@ func TestConvertSongFileCommandGeneration(t *testing.T) {
     }
 }
 
+func TestConvertedOutputFilepathsGeneration(t *testing.T) {
+    inputSongPaths := []string {
+        "/home/test-mix/SongA.mp3",
+        "/home/test-mix/SongB.mp3",
+        "/home/test-mix/SongC.mp3",
+    }
+    outDirPath := "/home/mix-out"
+    expectedConvertedSongPaths := []string {
+        path.Join(outDirPath, path.Base(inputSongPaths[0])),
+        path.Join(outDirPath, path.Base(inputSongPaths[1])),
+        path.Join(outDirPath, path.Base(inputSongPaths[2])),
+    }
+
+    convertedSongPaths := GenerateConvertedOutputFilepaths(&inputSongPaths, &outDirPath)
+
+    if len(convertedSongPaths) != len(expectedConvertedSongPaths) {
+        t.Errorf(
+            "No. of converted song paths: expected %d, got %d",
+            len(expectedConvertedSongPaths),
+            len(expectedConvertedSongPaths),
+        )
+    }
+
+    for i := range convertedSongPaths {
+        if convertedSongPaths[i] != expectedConvertedSongPaths[i] {
+            t.Errorf(
+                "convertedSongPaths[%d]: got %s, expected %s",
+                i,
+                convertedSongPaths[i],
+                expectedConvertedSongPaths[i],
+            )
+        }
+    }
+}
+
 func TestInputFilesFlagsGeneration(t *testing.T) {
     songPaths := []string {
         "/home/converted-audio-files/SongA.mp3",

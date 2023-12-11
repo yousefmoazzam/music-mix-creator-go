@@ -28,6 +28,20 @@ func GenerateSongConversionCommand(songPath string, outPath string) (string, []s
     return FFMPEG_PATH, args
 }
 
+func GenerateConvertedOutputFilepaths(songPaths *[]string, outDirPath *string) []string {
+    var convertedSongPaths []string
+
+    for i := range *songPaths {
+        filename := path.Base((*songPaths)[i])
+        convertedSongPaths = append(
+            convertedSongPaths,
+            path.Join(*outDirPath, filename),
+        )
+    }
+
+    return convertedSongPaths
+}
+
 func GenerateInputFilesFlags(songPaths *[]string) []string {
     var args []string
     for i := range *songPaths {
