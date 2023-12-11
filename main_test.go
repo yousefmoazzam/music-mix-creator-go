@@ -40,3 +40,39 @@ func TestConvertSongFileCommandGeneration(t *testing.T) {
         }
     }
 }
+
+func TestInputFilesFlagsGeneration(t *testing.T) {
+    songPaths := []string {
+        "/home/converted-audio-files/SongA.mp3",
+        "/home/converted-audio-files/SongB.mp3",
+        "/home/converted-audio-files/SongC.mp3",
+    }
+
+    flagsAndPaths := GenerateInputFilesFlags(&songPaths)
+    expectedFlagsAndPaths := []string {
+        "-i",
+        "/home/converted-audio-files/SongA.mp3",
+        "-i",
+        "/home/converted-audio-files/SongB.mp3",
+        "-i",
+        "/home/converted-audio-files/SongC.mp3",
+        "-f",
+        "lavfi",
+        "-i",
+        "anullsrc",
+    }
+
+    if len(flagsAndPaths) != len(expectedFlagsAndPaths) {
+        t.Errorf(
+            "Length of args: got %d, expected %d",
+            len(flagsAndPaths),
+            len(expectedFlagsAndPaths),
+        )
+    }
+
+    for i := range flagsAndPaths {
+        if flagsAndPaths[i] != expectedFlagsAndPaths[i] {
+            t.Errorf("Got %q, expected %q", flagsAndPaths[i], expectedFlagsAndPaths[i])
+        }
+    }
+}

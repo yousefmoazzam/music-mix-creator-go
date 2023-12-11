@@ -14,6 +14,7 @@ var SONG_CONVERSION_FLAGS = []string {
     "-b:a",
     "192k",
 }
+var SILENCE_INPUT = []string { "-f", "lavfi", "-i", "anullsrc" }
 
 func GenerateSongConversionCommand(songPath string, outPath string) (string, []string) {
     fileName := path.Base(songPath)
@@ -25,4 +26,13 @@ func GenerateSongConversionCommand(songPath string, outPath string) (string, []s
     )
     args = append(args, outFilePath)
     return FFMPEG_PATH, args
+}
+
+func GenerateInputFilesFlags(songPaths *[]string) []string {
+    var args []string
+    for i := range *songPaths {
+        args = append(args, []string { "-i", (*songPaths)[i] }...)
+    }
+    args = append(args, SILENCE_INPUT...)
+    return args
 }
