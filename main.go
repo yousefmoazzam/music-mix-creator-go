@@ -77,3 +77,9 @@ func GenerateConcatArgsFileOrdering(noOfSongFiles int) string {
     res = append(res, finalSongNoSilence)
     return strings.Join(res, "")
 }
+
+func GenerateConcatArgsFinalPart(noOfSongFiles int) string {
+    noOfSilences := noOfSongFiles - 1
+    noOfAudioPieces := noOfSongFiles + noOfSilences
+    return fmt.Sprintf("concat=n=%d:v=0:a=1", noOfAudioPieces)
+}

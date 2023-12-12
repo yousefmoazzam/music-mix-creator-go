@@ -130,3 +130,12 @@ func TestConcatArgsFileOrderingGeneration(t *testing.T) {
         t.Errorf("Got %s, expected %s", got, expectedOutput)
     }
 }
+
+func TestConcatArgsFinalPartGeneration(t *testing.T) {
+    noOfSongFiles := 3
+    expectedOutput := "concat=n=5:v=0:a=1"
+    got := GenerateConcatArgsFinalPart(noOfSongFiles)
+    if got != expectedOutput {
+        t.Errorf("Got %s, expected %s", got, expectedOutput)
+    }
+}
