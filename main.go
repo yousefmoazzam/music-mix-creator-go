@@ -1,6 +1,10 @@
 package main
 
-import "path"
+import (
+	"fmt"
+	"path"
+	"strings"
+)
 
 const FFMPEG_PATH = "/usr/bin/ffmpeg"
 const CONVERTED_OUT_DIR = "converted-audio-files"
@@ -49,4 +53,15 @@ func GenerateInputFilesFlags(songPaths *[]string) []string {
     }
     args = append(args, SILENCE_INPUT...)
     return args
+}
+
+func GenerateConcatArgsFileOrdering(noOfSongFiles int) string {
+    var res []string
+    for i := 0; i < noOfSongFiles - 1; i++ {
+        songSilencePair := fmt.Sprintf("[%d][g%d]", i, i)
+        res = append(res, songSilencePair)
+    }
+    finalSongNoSilence := fmt.Sprintf("[%d]", noOfSongFiles - 1)
+    res = append(res, finalSongNoSilence)
+    return strings.Join(res, "")
 }
