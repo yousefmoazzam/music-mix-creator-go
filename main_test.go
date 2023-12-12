@@ -112,6 +112,16 @@ func TestInputFilesFlagsGeneration(t *testing.T) {
     }
 }
 
+
+func TestConcatArgsTrimsGeneration(t *testing.T) {
+    noOfSongFiles := 3
+    expectedOutput := "[3]atrim=duration=1[g0];[3]atrim=duration=1[g1];"
+    got := GenerateConcatArgsTrims(noOfSongFiles)
+    if got != expectedOutput {
+        t.Errorf("Got %s, expected %s", got, expectedOutput)
+    }
+}
+
 func TestConcatArgsFileOrderingGeneration(t *testing.T) {
     noOfSongFiles := 2
     expectedOutput := "[0][g0][1]"

@@ -55,6 +55,18 @@ func GenerateInputFilesFlags(songPaths *[]string) []string {
     return args
 }
 
+func GenerateConcatArgsTrims(noOfSongFiles int) string {
+    var vals []string
+    for i := 0; i < noOfSongFiles - 1; i++ {
+        silenceTrim := fmt.Sprintf(
+            "[%d]atrim=duration=1[g%d]", noOfSongFiles, i,
+        )
+        vals = append(vals, silenceTrim)
+    }
+    res := strings.Join(vals, ";") + ";"
+    return res
+}
+
 func GenerateConcatArgsFileOrdering(noOfSongFiles int) string {
     var res []string
     for i := 0; i < noOfSongFiles - 1; i++ {
