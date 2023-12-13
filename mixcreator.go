@@ -83,3 +83,10 @@ func GenerateConcatArgsFinalPart(noOfSongFiles int) string {
     noOfAudioPieces := noOfSongFiles + noOfSilences
     return fmt.Sprintf("concat=n=%d:v=0:a=1", noOfAudioPieces)
 }
+
+func GenerateConcatArgs(noOfSongFiles int) string {
+    trimsPart := GenerateConcatArgsTrims(noOfSongFiles)
+    orderingPart := GenerateConcatArgsFileOrdering(noOfSongFiles)
+    concatPart := GenerateConcatArgsFinalPart(noOfSongFiles)
+    return trimsPart + orderingPart + concatPart
+}
