@@ -184,3 +184,34 @@ func TestCheckIfConvertedAudioFilesExistNoDir(t *testing.T) {
         )
     }
 }
+
+func TestCheckIfConvertedAudioFilesExistIncorrectNumber(t *testing.T) {
+    inputSongPaths := []string {
+        "/home/test-mix/SongA.mp3",
+        "/home/test-mix/SongB.mp3",
+        "/home/test-mix/SongC.mp3",
+    }
+    dummyOutDir := t.TempDir()
+    convertedFilesDir := path.Join(dummyOutDir, CONVERTED_OUT_DIR)
+    os.Mkdir(convertedFilesDir, 0777)
+    convertedSongFiles := []string {
+        path.Join(convertedFilesDir, path.Base(inputSongPaths[0])),
+        path.Join(convertedFilesDir, path.Base(inputSongPaths[1])),
+        // Purposely miss one file out, to cause a mismatch in the number of converted audio
+        // files discovered compared to original audio files
+    }
+
+    for i := range convertedSongFiles {
+        os.Create(convertedSongFiles[i])
+    }
+
+    expected := false
+    doConvertedAudioFilesExist := CheckIfConvertedAudioFilesExist(dummyOutDir, &inputSongPaths)
+    if doConvertedAudioFilesExist {
+        t.Errorf(
+            "Converted audio dir has one missing file: got %v, expected %v",
+            doConvertedAudioFilesExist,
+            expected,
+        )
+    }
+}

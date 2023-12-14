@@ -102,6 +102,10 @@ func CheckIfConvertedAudioFilesExist(outDir string, inputFilePaths *[]string) bo
         return false
     }
 
+    if len(contents) != len(*inputFilePaths) {
+        return false
+    }
+
     var inputFileNames []string
     for i := range *inputFilePaths {
         inputFileNames = append(
