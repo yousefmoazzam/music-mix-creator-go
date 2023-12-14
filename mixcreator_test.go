@@ -1,8 +1,9 @@
 package mixcreator
 
 import (
-    "testing"
+    "os"
     "path"
+    "testing"
 )
 
 func TestConvertSongFileCommandGeneration(t *testing.T) {
@@ -137,5 +138,31 @@ func TestConcatArgsFinalPartGeneration(t *testing.T) {
     got := GenerateConcatArgsFinalPart(noOfSongFiles)
     if got != expectedOutput {
         t.Errorf("Got %s, expected %s", got, expectedOutput)
+    }
+}
+
+func TestCheckIfConvertedAudioFilesExistTrue(t *testing.T) {
+    inputSongPaths := []string {
+        "/home/test-mix/SongA.mp3",
+        "/home/test-mix/SongB.mp3",
+        "/home/test-mix/SongC.mp3",
+    }
+    dummyOutDir := t.TempDir()
+    convertedFilesDir := path.Join(dummyOutDir, CONVERTED_OUT_DIR)
+    os.Mkdir(convertedFilesDir, 0777)
+    convertedSongFiles := []string {
+        path.Join(convertedFilesDir, path.Base(inputSongPaths[0])),
+        path.Join(convertedFilesDir, path.Base(inputSongPaths[1])),
+        path.Join(convertedFilesDir, path.Base(inputSongPaths[2])),
+    }
+
+    for i := range convertedSongFiles {
+        os.Create(convertedSongFiles[i])
+    }
+
+    expected := true
+    doConvertedAudioFilesExist := CheckIfConvertedAudioFilesExist(dummyOutDir, &inputSongPaths)
+    if !doConvertedAudioFilesExist {
+        t.Errorf("Got %v, expected %v", doConvertedAudioFilesExist, expected)
     }
 }

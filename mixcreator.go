@@ -2,7 +2,9 @@ package mixcreator
 
 import (
 	"fmt"
+	"os"
 	"path"
+	"slices"
 	"strings"
 )
 
@@ -89,4 +91,25 @@ func GenerateConcatArgs(noOfSongFiles int) string {
     orderingPart := GenerateConcatArgsFileOrdering(noOfSongFiles)
     concatPart := GenerateConcatArgsFinalPart(noOfSongFiles)
     return trimsPart + orderingPart + concatPart
+}
+
+func CheckIfConvertedAudioFilesExist(outDir string, inputFilePaths *[]string) bool {
+    convertedAudioDir := path.Join(outDir, CONVERTED_OUT_DIR)
+    contents, _ := os.ReadDir(convertedAudioDir)
+
+    var inputFileNames []string
+    for i := range *inputFilePaths {
+        inputFileNames = append(
+            inputFileNames,
+            path.Base((*inputFilePaths)[i]),
+        )
+    }
+
+    for i := range contents {
+        if !slices.Contains(inputFileNames, contents[i].Name()) {
+            return false
+        }
+    }
+
+    return true
 }
