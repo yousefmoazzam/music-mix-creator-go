@@ -166,3 +166,21 @@ func TestCheckIfConvertedAudioFilesExistTrue(t *testing.T) {
         t.Errorf("Got %v, expected %v", doConvertedAudioFilesExist, expected)
     }
 }
+
+func TestCheckIfConvertedAudioFilesExistNoDir(t *testing.T) {
+    inputSongPaths := []string {
+        "/home/test-mix/SongA.mp3",
+        "/home/test-mix/SongB.mp3",
+        "/home/test-mix/SongC.mp3",
+    }
+    dummyOutDir := t.TempDir()
+    expected := false
+    doConvertedAudioFilesExist := CheckIfConvertedAudioFilesExist(dummyOutDir, &inputSongPaths)
+    if doConvertedAudioFilesExist {
+        t.Errorf(
+            "Converted audio dir doesn't exist: got %v, expected %v",
+            doConvertedAudioFilesExist,
+            expected,
+        )
+    }
+}

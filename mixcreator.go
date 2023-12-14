@@ -1,6 +1,7 @@
 package mixcreator
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"path"
@@ -95,7 +96,11 @@ func GenerateConcatArgs(noOfSongFiles int) string {
 
 func CheckIfConvertedAudioFilesExist(outDir string, inputFilePaths *[]string) bool {
     convertedAudioDir := path.Join(outDir, CONVERTED_OUT_DIR)
-    contents, _ := os.ReadDir(convertedAudioDir)
+    contents, err := os.ReadDir(convertedAudioDir)
+
+    if errors.Is(err, os.ErrNotExist) {
+        return false
+    }
 
     var inputFileNames []string
     for i := range *inputFilePaths {
