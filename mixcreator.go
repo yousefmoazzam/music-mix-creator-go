@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"slices"
+	"strconv"
 	"strings"
 )
 
@@ -135,4 +136,10 @@ func GenerateffprobeCommand(mixFilePath string) (string, []string) {
         mixFilePath,
     }
     return FFPROBE_PATH, args
+}
+
+func ParseffprobeOutput(s string) float64 {
+    vals := strings.Split(s, ",")
+    duration, _ := strconv.ParseFloat(vals[1], 32)
+    return duration
 }

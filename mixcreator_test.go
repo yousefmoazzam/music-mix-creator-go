@@ -1,6 +1,7 @@
 package mixcreator
 
 import (
+    "math"
     "os"
     "path"
     "testing"
@@ -238,5 +239,21 @@ func TestFfprobeCommandGeneration(t *testing.T) {
         if args[i] != expectedArgs[i] {
             t.Errorf("Args[%d]: got %s, expected %s", i, args[i], expectedArgs[i])
         }
+    }
+}
+
+func TestFfprobeOutputParsing(t *testing.T) {
+    dummyFfprobeOutput := "format,227.552653"
+    exactExpected := 227.552653
+    tolerance := 0.000001
+    parsedOutput := ParseffprobeOutput(dummyFfprobeOutput)
+    withinTolerance := math.Abs(parsedOutput - exactExpected) < tolerance
+    if withinTolerance {
+        t.Errorf(
+            "Expected %f within a tolerance of %f, got %f",
+            exactExpected,
+            tolerance,
+            parsedOutput,
+        )
     }
 }
