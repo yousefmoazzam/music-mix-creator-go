@@ -215,3 +215,28 @@ func TestCheckIfConvertedAudioFilesExistIncorrectNumber(t *testing.T) {
         )
     }
 }
+
+func TestFfprobeCommandGeneration(t *testing.T) {
+    mixAudioFilePath := "/home/test-mix/mix.mp3"
+    expectedProgram := "/usr/bin/ffprobe"
+    expectedArgs := []string {
+        "-show_entries",
+        "format=duration",
+        "-v",
+        "quiet",
+        "-of",
+        "csv",
+        mixAudioFilePath,
+    }
+    program, args := GenerateffprobeCommand(mixAudioFilePath)
+
+    if program != expectedProgram {
+        t.Errorf("Program: got %s, expected %s", program, expectedProgram)
+    }
+
+    for i := range expectedArgs {
+        if args[i] != expectedArgs[i] {
+            t.Errorf("Args[%d]: got %s, expected %s", i, args[i], expectedArgs[i])
+        }
+    }
+}

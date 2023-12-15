@@ -10,6 +10,7 @@ import (
 )
 
 const FFMPEG_PATH = "/usr/bin/ffmpeg"
+const FFPROBE_PATH = "/usr/bin/ffprobe"
 const CONVERTED_OUT_DIR = "converted-audio-files"
 const INPUT_FLAG = "-i"
 var SONG_CONVERSION_FLAGS = []string {
@@ -121,4 +122,17 @@ func CheckIfConvertedAudioFilesExist(outDir string, inputFilePaths *[]string) bo
     }
 
     return true
+}
+
+func GenerateffprobeCommand(mixFilePath string) (string, []string) {
+    args := []string {
+        "-show_entries",
+        "format=duration",
+        "-v",
+        "quiet",
+        "-of",
+        "csv",
+        mixFilePath,
+    }
+    return FFPROBE_PATH, args
 }
