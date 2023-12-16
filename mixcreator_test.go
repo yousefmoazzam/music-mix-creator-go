@@ -246,7 +246,7 @@ func TestFfprobeOutputParsing(t *testing.T) {
     dummyFfprobeOutput := "format,227.552653"
     exactExpected := 227.552653
     tolerance := 0.000001
-    parsedOutput := ParseffprobeOutput(dummyFfprobeOutput)
+    parsedOutput, _ := ParseffprobeOutput(dummyFfprobeOutput)
     withinTolerance := math.Abs(parsedOutput - exactExpected) < tolerance
     if withinTolerance {
         t.Errorf(
@@ -255,5 +255,13 @@ func TestFfprobeOutputParsing(t *testing.T) {
             tolerance,
             parsedOutput,
         )
+    }
+}
+
+func TestFfprobeOutputParsingMissingDuration(t *testing.T) {
+    dummyFfprobeOutput := "format,"
+    _, err := ParseffprobeOutput(dummyFfprobeOutput)
+    if err == nil {
+        t.Error("Expected an error but didn't get one")
     }
 }

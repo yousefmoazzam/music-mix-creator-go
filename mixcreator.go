@@ -138,8 +138,13 @@ func GenerateffprobeCommand(mixFilePath string) (string, []string) {
     return FFPROBE_PATH, args
 }
 
-func ParseffprobeOutput(s string) float64 {
+func ParseffprobeOutput(s string) (float64, error) {
     vals := strings.Split(s, ",")
+
+    if len(vals) == 2 && vals[1] == "" {
+        return 0, errors.New("Blank duration field in ffprobe output")
+    }
+
     duration, _ := strconv.ParseFloat(vals[1], 32)
-    return duration
+    return duration, nil
 }
