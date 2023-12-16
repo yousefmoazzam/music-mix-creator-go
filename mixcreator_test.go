@@ -265,3 +265,11 @@ func TestFfprobeOutputParsingMissingDuration(t *testing.T) {
         t.Error("Expected an error but didn't get one")
     }
 }
+
+func TestFfprobeOutputParsingNotAFloat(t *testing.T) {
+    dummyFfprobeOutput := "format,NotAFloat"
+    _, err := ParseffprobeOutput(dummyFfprobeOutput)
+    if err == nil {
+        t.Error("Expected an error but didn't get one")
+    }
+}
