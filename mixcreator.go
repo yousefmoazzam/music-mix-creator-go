@@ -151,3 +151,34 @@ func ParseffprobeOutput(s string) (float64, error) {
 
     return duration, nil
 }
+
+func GenerateAudioVideoMuxCommand(
+    imagePath string,
+    audioPath string,
+    duration float64,
+    outPath string,
+) (string, []string) {
+    args := []string {
+        "-loop",
+        "1",
+        "-framerate",
+        "24",
+        "-i",
+        imagePath,
+        "-i",
+        audioPath,
+        "-vf",
+        "fade=t=in:st=0:d=10,",
+        fmt.Sprintf("fade=t=out:st=%f:d=10", duration - 10),
+        "-max_muxing_queue_size",
+        "1024",
+        "-c:v",
+        "libx264",
+        "-tune",
+        "stillimage",
+        "-t",
+        fmt.Sprintf("%f", duration),
+        outPath,
+    }
+    return FFMPEG_PATH, args
+}

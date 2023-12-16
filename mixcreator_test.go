@@ -1,6 +1,7 @@
 package mixcreator
 
 import (
+    "fmt"
     "math"
     "os"
     "path"
@@ -271,5 +272,64 @@ func TestFfprobeOutputParsingNotAFloat(t *testing.T) {
     _, err := ParseffprobeOutput(dummyFfprobeOutput)
     if err == nil {
         t.Error("Expected an error but didn't get one")
+    }
+}
+
+func TestAudioVideoMuxCommandGeneration(t *testing.T) {
+    dummyAudioMixPath := "/home/mix/audio-mix.mp3"
+    dummyImagePath := "/home/mix/image.jpg"
+    dummyMixDuration := 100.012345
+    dummyOutputPath := "/home/mix/mix.mp4"
+    expectedArgs := []string {
+        "-loop",
+        "1",
+        "-framerate",
+        "24",
+        "-i",
+        dummyImagePath,
+        "-i",
+        dummyAudioMixPath,
+        "-vf",
+        "fade=t=in:st=0:d=10,",
+        fmt.Sprintf("fade=t=out:st=%f:d=10", dummyMixDuration - 10),
+        "-max_muxing_queue_size",
+        "1024",
+        "-c:v",
+        "libx264",
+        "-tune",
+        "stillimage",
+        "-t",
+        fmt.Sprintf("%f", dummyMixDuration),
+        dummyOutputPath,
+    }
+
+    program, args := GenerateAudioVideoMuxCommand(
+        dummyImagePath,
+        dummyAudioMixPath,
+        dummyMixDuration,
+        dummyOutputPath,
+    )
+
+    if program != FFMPEG_PATH {
+        t.Errorf("Program: expected %s, got %s", FFMPEG_PATH, program)
+    }
+
+    if len(args) != len(expectedArgs) {
+        t.Errorf(
+            "Number of args: expected %d, got %d",
+            len(expectedArgs),
+            len(args),
+        )
+    }
+
+    for i := range args {
+        if args[i] != expectedArgs[i] {
+            t.Errorf(
+                "Args[%d]: expected %s, got %s",
+                i,
+                expectedArgs[i],
+                args[i],
+            )
+        }
     }
 }
