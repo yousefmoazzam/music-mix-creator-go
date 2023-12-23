@@ -8,11 +8,19 @@ import (
 )
 
 func ValidateInputDirArg(arg *string) (bool, error) {
-    _, err := os.Stat(*arg)
+    fileInfo, err := os.Stat(*arg)
 
     if errors.Is(err, fs.ErrNotExist) {
         message := fmt.Sprintf(
             "Input directory arg does not exist: %s",
+            *arg,
+        )
+        return false, errors.New(message)
+    }
+
+    if !fileInfo.IsDir() {
+        message := fmt.Sprintf(
+            "Input directory arg is not a directory: %s",
             *arg,
         )
         return false, errors.New(message)
