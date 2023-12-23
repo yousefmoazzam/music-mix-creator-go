@@ -69,3 +69,33 @@ func TestInputDirArgValidatorIsDir(t *testing.T) {
         )
     }
 }
+
+func TestInputDirArgValidatorIsNonEmpty(t *testing.T) {
+    inputDir := t.TempDir()
+    expectedRes := false
+    expectedErrMessage := fmt.Sprintf(
+        "Input directory is empty: %s",
+        inputDir,
+    )
+    res, err := ValidateInputDirArg(&inputDir)
+
+    if res != expectedRes {
+        t.Errorf(
+            "Bool: expected %v, got %v",
+            expectedRes,
+            res,
+        )
+    }
+
+    if err == nil {
+        t.Error("Expected error, got nil")
+    }
+
+    if err.Error() != expectedErrMessage {
+        t.Errorf(
+            "Error message: expected %s, got %s",
+            expectedErrMessage,
+            err.Error(),
+        )
+    }
+}

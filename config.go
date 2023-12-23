@@ -26,5 +26,14 @@ func ValidateInputDirArg(arg *string) (bool, error) {
         return false, errors.New(message)
     }
 
+    contents, _ := os.ReadDir(*arg)
+    if len(contents) == 0 {
+        message := fmt.Sprintf(
+            "Input directory is empty: %s",
+            *arg,
+        )
+        return false, errors.New(message)
+    }
+
     return true, nil
 }
