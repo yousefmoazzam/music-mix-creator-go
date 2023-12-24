@@ -5,6 +5,8 @@ import (
     "fmt"
     "io/fs"
     "os"
+    "path"
+    "path/filepath"
 )
 
 func ValidateInputDirArg(arg *string) (bool, error) {
@@ -31,6 +33,29 @@ func ValidateInputDirArg(arg *string) (bool, error) {
         message := fmt.Sprintf(
             "Input directory is empty: %s",
             *arg,
+        )
+        return false, errors.New(message)
+    }
+
+    globPatterns := []string {
+        "*.mp3",
+        "*.m4a",
+        "*.aac",
+        "*.wav",
+        "*.flac",
+    }
+    var globResults []string
+    for i := range globPatterns {
+        filePathPattern := path.Join(*arg, globPatterns[i])
+        res, _ := filepath.Glob(filePathPattern)
+        globResults = append(globResults, res...)
+    }
+
+    if len(globResults) < 2 {
+        message := fmt.Sprintf(
+            "No. of audio files: need at least 2 audio files in " +
+            "input dir, found %d",
+            len(globResults),
         )
         return false, errors.New(message)
     }

@@ -99,3 +99,48 @@ func TestInputDirArgValidatorIsNonEmpty(t *testing.T) {
         )
     }
 }
+
+func TestInputDirArgValidatorHasEnoughAudioFiles(t *testing.T) {
+    inputDir := t.TempDir()
+    audioFile := "songA.mp3"
+    audioFilePath := path.Join(inputDir, audioFile)
+    os.Create(audioFilePath)
+    nonAudioFiles := []string {
+        "fileA.txt",
+        "fileB.mp4",
+        "fileC.md",
+        "image.jpg",
+    }
+    var nonAudioFilePaths []string
+    for i := range nonAudioFiles {
+        nonAudioFilePaths = append(
+            nonAudioFilePaths,
+            path.Join(inputDir, nonAudioFiles[i]),
+        )
+        os.Create(nonAudioFilePaths[i])
+    }
+    expectedRes := false
+    expectedErrMessage := "No. of audio files: need at least 2 audio files in " +
+        "input dir, found 1"
+    res, err := ValidateInputDirArg(&inputDir)
+
+    if res != expectedRes {
+        t.Errorf(
+            "Bool: expected %v, got %v",
+            expectedRes,
+            res,
+        )
+    }
+
+    if err == nil {
+        t.Error("Expected error, got nil")
+    }
+
+    if err.Error() != expectedErrMessage {
+        t.Errorf(
+            "Error message: expected %s, got %s",
+            expectedErrMessage,
+            err.Error(),
+        )
+    }
+}
