@@ -77,5 +77,13 @@ func ValidateInputDirArg(arg *string) (bool, error) {
         return false, errors.New(message)
     }
 
+    if len(imageFileGlobResults) > 1 {
+        message := fmt.Sprintf(
+            "Image file: detected %d image files in input dir, please provide only one",
+            len(imageFileGlobResults),
+        )
+        return false, errors.New(message)
+    }
+
     return true, nil
 }
