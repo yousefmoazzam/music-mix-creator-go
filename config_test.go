@@ -144,3 +144,38 @@ func TestInputDirArgValidatorHasEnoughAudioFiles(t *testing.T) {
         )
     }
 }
+
+func TestInputDirArgValidatorAtLeastOneImage(t *testing.T) {
+    inputDir := t.TempDir()
+    songFiles := []string {
+        "songA.mp3",
+        "songB.mp3",
+    }
+    for i := range songFiles {
+        songFilePath := path.Join(inputDir, songFiles[i])
+        os.Create(songFilePath)
+    }
+    expectedRes := false
+    expectedErrMessage := "Image file: detected no image file in input dir"
+    res, err := ValidateInputDirArg(&inputDir)
+
+    if res != expectedRes {
+        t.Errorf(
+            "Bool: expected %v, got %v",
+            expectedRes,
+            res,
+        )
+    }
+
+    if err == nil {
+        t.Error("Expected error, got nil")
+    }
+
+    if err.Error() != expectedErrMessage {
+        t.Errorf(
+            "Error message: expected %s, got %s",
+            expectedErrMessage,
+            err.Error(),
+        )
+    }
+}

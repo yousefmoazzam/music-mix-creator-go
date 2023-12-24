@@ -60,5 +60,22 @@ func ValidateInputDirArg(arg *string) (bool, error) {
         return false, errors.New(message)
     }
 
+    imageFileGlobPatterns := []string {
+        "*.jpg",
+        "*.jpeg",
+        "*.png",
+    }
+    var imageFileGlobResults []string
+    for i := range imageFileGlobPatterns {
+        imageFilePathPattern := path.Join(*arg, imageFileGlobPatterns[i])
+        res, _ := filepath.Glob(imageFilePathPattern)
+        imageFileGlobResults = append(imageFileGlobResults, res...)
+    }
+
+    if len(imageFileGlobResults) == 0 {
+        message := "Image file: detected no image file in input dir"
+        return false, errors.New(message)
+    }
+
     return true, nil
 }
