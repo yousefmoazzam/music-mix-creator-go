@@ -145,83 +145,65 @@ func TestInputDirArgValidatorHasEnoughAudioFiles(t *testing.T) {
     }
 }
 
-func TestInputDirArgValidatorAtLeastOneImage(t *testing.T) {
-    inputDir := t.TempDir()
+func TestInputDirArgValidatorImages(t *testing.T) {
+    tests := map[string]struct {
+        imageFiles []string
+        expectedErrMessage string
+    } {
+        "no images": {
+            imageFiles: []string{},
+            expectedErrMessage:  "Image file: detected no image file in input dir",
+        },
+        "too many images": {
+            imageFiles: []string {
+                "image1.jpg",
+                "image2.png",
+            },
+            expectedErrMessage: "Image file: detected 2 image files in input dir, " +
+                "please provide only one",
+        },
+    }
+
     songFiles := []string {
         "songA.mp3",
         "songB.mp3",
     }
-    for i := range songFiles {
-        songFilePath := path.Join(inputDir, songFiles[i])
-        os.Create(songFilePath)
-    }
     expectedRes := false
-    expectedErrMessage := "Image file: detected no image file in input dir"
-    res, err := ValidateInputDirArg(&inputDir)
 
-    if res != expectedRes {
-        t.Errorf(
-            "Bool: expected %v, got %v",
-            expectedRes,
-            res,
-        )
-    }
+    for name, test := range tests {
+        t.Run(name, func(t *testing.T) {
+            inputDir := t.TempDir()
+            for i := range songFiles {
+                songFilePath := path.Join(inputDir, songFiles[i])
+                os.Create(songFilePath)
+            }
 
-    if err == nil {
-        t.Error("Expected error, got nil")
-    }
+            for i := range test.imageFiles {
+                imageFilePath := path.Join(inputDir, test.imageFiles[i])
+                os.Create(imageFilePath)
+            }
 
-    if err.Error() != expectedErrMessage {
-        t.Errorf(
-            "Error message: expected %s, got %s",
-            expectedErrMessage,
-            err.Error(),
-        )
-    }
-}
+            res, err := ValidateInputDirArg(&inputDir)
 
-func TestInputDirArgValidatorTooManyImages(t *testing.T) {
-    inputDir := t.TempDir()
-    songFiles := []string {
-        "songA.mp3",
-        "songB.mp3",
-    }
-    for i := range songFiles {
-        songFilePath := path.Join(inputDir, songFiles[i])
-        os.Create(songFilePath)
-    }
-    imageFiles := []string {
-        "image1.jpg",
-        "image2.png",
-    }
-    for i := range imageFiles {
-        imageFilePath := path.Join(inputDir, imageFiles[i])
-        os.Create(imageFilePath)
-    }
-    expectedRes := false
-    expectedErrMessage := fmt.Sprintf(
-        "Image file: detected %d image files in input dir, please provide only one",
-        len(imageFiles),
-    )
-    res, err := ValidateInputDirArg(&inputDir)
+            if res != expectedRes {
+                t.Errorf(
+                    "Bool: expected %v, got %v",
+                    expectedRes,
+                    res,
+                )
+            }
 
-    if res != expectedRes {
-        t.Errorf(
-            "Bool: expected %v, got %v",
-            expectedRes,
-            res,
-        )
-    }
+            if err == nil {
+                t.Error("Expected error, got nil")
+            }
 
-    if err == nil {
-        t.Error("Expected error, got nil")
-    }
-
-    if err.Error() != expectedErrMessage {
-        t.Errorf(
-            "Error message: expected %s, got %s",
-            expectedErrMessage,
-            err.Error(),
-        )
+            if err.Error() != test.expectedErrMessage {
+                t.Errorf(
+                    "Error message: expected %s, got %s",
+                    test.expectedErrMessage,
+                    err.Error(),
+                )
+            }
+        })
     }
 }
