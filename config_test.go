@@ -15,26 +15,7 @@ func TestInputDirArgValidatorDoexExist(t *testing.T) {
         nonexistentDir,
     )
     res, err := ValidateInputDirArg(&nonexistentDir)
-
-    if res != expectedRes {
-        t.Errorf(
-            "Bool: expected %v, got %v",
-            expectedRes,
-            res,
-        )
-    }
-
-    if err == nil {
-        t.Errorf("Expected error, got nil")
-    }
-
-    if err.Error() != expectedErrMessage {
-        t.Errorf(
-            "Error message: expected %s, got %s",
-            expectedErrMessage,
-            err.Error(),
-        )
-    }
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
 }
 
 func TestInputDirArgValidatorIsDir(t *testing.T) {
@@ -48,26 +29,7 @@ func TestInputDirArgValidatorIsDir(t *testing.T) {
         fileNotDirPath,
     )
     res, err := ValidateInputDirArg(&fileNotDirPath)
-
-    if res != expectedRes {
-        t.Errorf(
-            "Bool: expected %v, got %v",
-            expectedRes,
-            res,
-        )
-    }
-
-    if err == nil {
-        t.Errorf("Expected error, got nil")
-    }
-
-    if err.Error() != expectedErr {
-        t.Errorf(
-            "Error message: expected %s, got %s",
-            expectedErr,
-            err.Error(),
-        )
-    }
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErr)
 }
 
 func TestInputDirArgValidatorIsNonEmpty(t *testing.T) {
@@ -78,26 +40,7 @@ func TestInputDirArgValidatorIsNonEmpty(t *testing.T) {
         inputDir,
     )
     res, err := ValidateInputDirArg(&inputDir)
-
-    if res != expectedRes {
-        t.Errorf(
-            "Bool: expected %v, got %v",
-            expectedRes,
-            res,
-        )
-    }
-
-    if err == nil {
-        t.Error("Expected error, got nil")
-    }
-
-    if err.Error() != expectedErrMessage {
-        t.Errorf(
-            "Error message: expected %s, got %s",
-            expectedErrMessage,
-            err.Error(),
-        )
-    }
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
 }
 
 func TestInputDirArgValidatorHasEnoughAudioFiles(t *testing.T) {
@@ -123,26 +66,7 @@ func TestInputDirArgValidatorHasEnoughAudioFiles(t *testing.T) {
     expectedErrMessage := "No. of audio files: need at least 2 audio files in " +
         "input dir, found 1"
     res, err := ValidateInputDirArg(&inputDir)
-
-    if res != expectedRes {
-        t.Errorf(
-            "Bool: expected %v, got %v",
-            expectedRes,
-            res,
-        )
-    }
-
-    if err == nil {
-        t.Error("Expected error, got nil")
-    }
-
-    if err.Error() != expectedErrMessage {
-        t.Errorf(
-            "Error message: expected %s, got %s",
-            expectedErrMessage,
-            err.Error(),
-        )
-    }
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
 }
 
 func TestInputDirArgValidatorImages(t *testing.T) {
@@ -185,25 +109,35 @@ func TestInputDirArgValidatorImages(t *testing.T) {
 
             res, err := ValidateInputDirArg(&inputDir)
 
-            if res != expectedRes {
-                t.Errorf(
-                    "Bool: expected %v, got %v",
-                    expectedRes,
-                    res,
-                )
-            }
-
-            if err == nil {
-                t.Error("Expected error, got nil")
-            }
-
-            if err.Error() != test.expectedErrMessage {
-                t.Errorf(
-                    "Error message: expected %s, got %s",
-                    test.expectedErrMessage,
-                    err.Error(),
-                )
-            }
+            ValidationAssertionsHelper(t, res, expectedRes, err, test.expectedErrMessage)
         })
+    }
+}
+
+func ValidationAssertionsHelper(
+    t *testing.T,
+    res bool,
+    expectedRes bool,
+    err error,
+    expectedErrMessage string,
+) {
+    if res != expectedRes {
+        t.Errorf(
+            "Bool: expected %v, got %v",
+            expectedRes,
+            res,
+        )
+    }
+
+    if err == nil {
+        t.Error("Expected error, got nil")
+    }
+
+    if err.Error() != expectedErrMessage {
+        t.Errorf(
+            "Error message: expected %s, got %s",
+            expectedErrMessage,
+            err.Error(),
+        )
     }
 }
