@@ -127,6 +127,24 @@ func TestOutputDirValidatorDirDoesntExistNorParent(t *testing.T) {
     ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
 }
 
+func TestOutputDirValidatorDirParentExistsWriteError(t *testing.T) {
+    tmpDir := t.TempDir()
+    parentDirPath := path.Join(tmpDir, "parent")
+    os.Mkdir(parentDirPath, 0000)
+    outputDirPath := path.Join(parentDirPath, "output")
+    expectedRes := false
+    expectedErrMessage := fmt.Sprintf(
+        "Unable to create output dir %s, please check permissions of parent dir %s",
+        outputDirPath,
+        parentDirPath,
+    )
+    res, err := ValidateOutputDirArg(&outputDirPath)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
+    // TODO: Check if this is necessary
+    // Change permissions of parent dir so it can be cleaned up when test exits
+    os.Chmod(parentDirPath, 0755)
+}
+
 func ValidationAssertionsHelper(
     t *testing.T,
     res bool,

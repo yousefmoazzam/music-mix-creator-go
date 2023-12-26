@@ -101,5 +101,15 @@ func ValidateOutputDirArg(arg *string) (bool, error) {
         return false, errors.New(message)
     }
 
+    dirCreationErr := os.Mkdir(*arg, 0755)
+    if dirCreationErr != nil && errors.Is(dirCreationErr, fs.ErrPermission) {
+        message := fmt.Sprintf(
+            "Unable to create output dir %s, please check permissions of parent dir %s",
+            *arg,
+            parentDir,
+        )
+        return false, errors.New(message)
+    }
+
     return true, nil
 }
