@@ -114,6 +114,19 @@ func TestInputDirArgValidatorImages(t *testing.T) {
     }
 }
 
+func TestOutputDirValidatorDirDoesntExistNorParent(t *testing.T) {
+    outputDir := "/tmp/non-existent-parent/subdir"
+    expectedRes := false
+    parentDir := path.Dir(outputDir)
+    expectedErrMessage := fmt.Sprintf(
+        "Output dir can only be created if the parent dir exists, but the " +
+        "parent dir %s doesn't exist",
+        parentDir,
+    )
+    res, err := ValidateOutputDirArg(&outputDir)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
+}
+
 func ValidationAssertionsHelper(
     t *testing.T,
     res bool,

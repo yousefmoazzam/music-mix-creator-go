@@ -87,3 +87,19 @@ func ValidateInputDirArg(arg *string) (bool, error) {
 
     return true, nil
 }
+
+func ValidateOutputDirArg(arg *string) (bool, error) {
+    parentDir := path.Dir(*arg)
+    _, err := os.Stat(parentDir)
+
+    if errors.Is(err, fs.ErrNotExist) {
+        message := fmt.Sprintf(
+            "Output dir can only be created if the parent dir exists, but the " +
+            "parent dir %s doesn't exist",
+            parentDir,
+        )
+        return false, errors.New(message)
+    }
+
+    return true, nil
+}
