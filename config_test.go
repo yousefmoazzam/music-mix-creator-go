@@ -145,6 +145,20 @@ func TestOutputDirValidatorDirParentExistsWriteError(t *testing.T) {
     os.Chmod(parentDirPath, 0755)
 }
 
+func TestOutputDirValidatorArgExistsButIsFile(t *testing.T) {
+    outputDir := t.TempDir()
+    dummyFile := "some-file.txt"
+    filePath := path.Join(outputDir, dummyFile)
+    os.Create(filePath)
+    expectedRes := false
+    expectedErrMessage := fmt.Sprintf(
+        "Given output dir arg exists, but is a file: %s",
+        filePath,
+    )
+    res, err := ValidateOutputDirArg(&filePath)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
+}
+
 func ValidationAssertionsHelper(
     t *testing.T,
     res bool,

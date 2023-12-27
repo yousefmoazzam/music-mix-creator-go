@@ -89,6 +89,15 @@ func ValidateInputDirArg(arg *string) (bool, error) {
 }
 
 func ValidateOutputDirArg(arg *string) (bool, error) {
+    argFileInfo, argFileErr := os.Stat(*arg)
+    if argFileErr == nil && !argFileInfo.IsDir() {
+        message := fmt.Sprintf(
+            "Given output dir arg exists, but is a file: %s",
+            *arg,
+        )
+        return false, errors.New(message)
+    }
+
     parentDir := path.Dir(*arg)
     _, err := os.Stat(parentDir)
 
