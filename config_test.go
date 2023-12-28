@@ -159,6 +159,24 @@ func TestOutputDirValidatorArgExistsButIsFile(t *testing.T) {
     ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
 }
 
+func TestOutputDirValidatorDirExistsIsDir(t *testing.T) {
+    outputDir := t.TempDir()
+    expectedRes := true
+    res, err := ValidateOutputDirArg(&outputDir)
+
+    if res != expectedRes {
+        t.Errorf(
+            "Bool: expected %v, got %v", expectedRes, res,
+        )
+    }
+
+    if err != nil {
+        t.Errorf(
+            "Expected nil, got error %s", err.Error(),
+        )
+    }
+}
+
 func ValidationAssertionsHelper(
     t *testing.T,
     res bool,
