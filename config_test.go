@@ -114,16 +114,31 @@ func TestInputDirArgValidatorImages(t *testing.T) {
     }
 }
 
-func TestAudioFilepathsArgNonExiestentFile(t *testing.T) {
+func TestAudioFilepathsArgValidatorNotEnoughFiles(t *testing.T) {
+    songFilePathsArg := []string {}
+    expectedRes := false
+    expectedErrMessage := fmt.Sprintf(
+        "Number of audio filepaths provided should be at least 2, the number " +
+        "given is: %d",
+        len(songFilePathsArg),
+    )
+    res, err := ValidateAudioFilepathsArg(&songFilePathsArg)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
+}
+
+func TestAudioFilepathsArgValidatorNonExistentFile(t *testing.T) {
     inputDir := t.TempDir()
-    nonExistentFile := "songA.mp3"
+    existingFile := "songA.mp3"
+    nonExistentFile := "songB.mp3"
     songFilePathsArg := []string {
+        path.Join(inputDir, existingFile),
         path.Join(inputDir, nonExistentFile),
     }
+    os.Create(songFilePathsArg[0])
     expectedRes := false
     expectedErrMessage := fmt.Sprintf(
         "One of the input audio filepaths doesn't exist: %s",
-        songFilePathsArg[0],
+        songFilePathsArg[1],
     )
     res, err := ValidateAudioFilepathsArg(&songFilePathsArg)
     ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)

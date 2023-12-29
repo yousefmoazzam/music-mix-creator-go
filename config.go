@@ -89,6 +89,15 @@ func ValidateInputDirArg(arg *string) (bool, error) {
 }
 
 func ValidateAudioFilepathsArg(paths *[]string) (bool, error) {
+    if len(*paths) < 2 {
+        message := fmt.Sprintf(
+            "Number of audio filepaths provided should be at least 2, the number " +
+            "given is: %d",
+            len(*paths),
+        )
+        return false, errors.New(message)
+    }
+
     var err error
 
     for _, filePath := range *paths {
