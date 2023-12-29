@@ -144,6 +144,16 @@ func TestAudioFilepathsArgValidatorNonExistentFile(t *testing.T) {
     ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
 }
 
+func TestImageFilepathArgValidatorFileExists(t *testing.T) {
+    nonExistentImageFilePath := "/home/pictures/image.jpg"
+    expectedRes := false
+    expectedErrorMessage := fmt.Sprintf(
+        "Image filepath doesn't exist: %s", nonExistentImageFilePath,
+    )
+    res, err := ValidateImageFilepathArg(&nonExistentImageFilePath)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrorMessage)
+}
+
 func TestOutputDirValidatorDirDoesntExistNorParent(t *testing.T) {
     outputDir := "/tmp/non-existent-parent/subdir"
     expectedRes := false

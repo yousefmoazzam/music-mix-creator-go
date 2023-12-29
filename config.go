@@ -114,6 +114,18 @@ func ValidateAudioFilepathsArg(paths *[]string) (bool, error) {
     return true, nil
 }
 
+func ValidateImageFilepathArg(arg *string) (bool, error) {
+    _, err := os.Stat(*arg)
+    if err != nil && errors.Is(err, fs.ErrNotExist) {
+        message := fmt.Sprintf(
+            "Image filepath doesn't exist: %s", *arg,
+        )
+        return false, errors.New(message)
+    }
+
+    return true, nil
+}
+
 func ValidateOutputDirArg(arg *string) (bool, error) {
     argFileInfo, argFileErr := os.Stat(*arg)
     if argFileErr == nil && !argFileInfo.IsDir() {
