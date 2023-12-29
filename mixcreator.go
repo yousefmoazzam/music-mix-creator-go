@@ -3,6 +3,7 @@ package mixcreator
 import (
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
 	"path"
 	"slices"
@@ -181,4 +182,21 @@ func GenerateAudioVideoMuxCommand(
         outPath,
     }
     return FFMPEG_PATH, args
+}
+
+func CreateConvertedAudioFileDir(outDir *string) (bool, error) {
+    convertedAudioDirPath := path.Join(*outDir, CONVERTED_OUT_DIR)
+    err := os.Mkdir(convertedAudioDirPath, 0755)
+
+    if err != nil && errors.Is(err, fs.ErrPermission) {
+        message := fmt.Sprintf(
+            "Unable to create subdir %s for converted audio files, please check " +
+            "permissions of parent dir %s",
+            convertedAudioDirPath,
+            *outDir,
+        )
+        return false, errors.New(message)
+    }
+
+    return true, nil
 }

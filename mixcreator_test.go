@@ -333,3 +333,22 @@ func TestAudioVideoMuxCommandGeneration(t *testing.T) {
         }
     }
 }
+
+func TestCreateConvertedAudioFilesDirPermsErr(t *testing.T) {
+    tmpDir := t.TempDir()
+    outDirPath := path.Join(tmpDir, "out")
+    os.Mkdir(outDirPath, 0555)
+    convertedAudioFileDirPath := path.Join(outDirPath, CONVERTED_OUT_DIR)
+    expectedRes := false
+    expectedErrMessage := fmt.Sprintf(
+        "Unable to create subdir %s for converted audio files, please check " +
+        "permissions of parent dir %s",
+        convertedAudioFileDirPath,
+        outDirPath,
+    )
+    res, err := CreateConvertedAudioFileDir(&outDirPath)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
+    // TODO: Check if this is necessary
+    // Change permissions of parent dir so it can be cleaned up when test exits
+    os.Chmod(outDirPath, 0755)
+}
