@@ -127,12 +127,12 @@ func TestAudioFilepathsArgValidatorNotEnoughFiles(t *testing.T) {
 }
 
 func TestAudioFilepathsArgValidatorNonExistentFile(t *testing.T) {
-    inputDir := t.TempDir()
+    tmpDir := t.TempDir()
     existingFile := "songA.mp3"
     nonExistentFile := "songB.mp3"
     songFilePathsArg := []string {
-        path.Join(inputDir, existingFile),
-        path.Join(inputDir, nonExistentFile),
+        path.Join(tmpDir, existingFile),
+        path.Join(tmpDir, nonExistentFile),
     }
     os.Create(songFilePathsArg[0])
     expectedRes := false
