@@ -88,6 +88,23 @@ func ValidateInputDirArg(arg *string) (bool, error) {
     return true, nil
 }
 
+func ValidateAudioFilepathsArg(paths *[]string) (bool, error) {
+    var err error
+
+    for _, filePath := range *paths {
+        _, err = os.Stat(filePath)
+        if err != nil && errors.Is(err, fs.ErrNotExist) {
+            message := fmt.Sprintf(
+                "One of the input audio filepaths doesn't exist: %s",
+                filePath,
+            )
+            return false, errors.New(message)
+        }
+    }
+
+    return true, nil
+}
+
 func ValidateOutputDirArg(arg *string) (bool, error) {
     argFileInfo, argFileErr := os.Stat(*arg)
     if argFileErr == nil && !argFileInfo.IsDir() {

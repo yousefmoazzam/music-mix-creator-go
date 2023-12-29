@@ -114,6 +114,21 @@ func TestInputDirArgValidatorImages(t *testing.T) {
     }
 }
 
+func TestAudioFilepathsArgNonExiestentFile(t *testing.T) {
+    inputDir := t.TempDir()
+    nonExistentFile := "songA.mp3"
+    songFilePathsArg := []string {
+        path.Join(inputDir, nonExistentFile),
+    }
+    expectedRes := false
+    expectedErrMessage := fmt.Sprintf(
+        "One of the input audio filepaths doesn't exist: %s",
+        songFilePathsArg[0],
+    )
+    res, err := ValidateAudioFilepathsArg(&songFilePathsArg)
+    ValidationAssertionsHelper(t, res, expectedRes, err, expectedErrMessage)
+}
+
 func TestOutputDirValidatorDirDoesntExistNorParent(t *testing.T) {
     outputDir := "/tmp/non-existent-parent/subdir"
     expectedRes := false
